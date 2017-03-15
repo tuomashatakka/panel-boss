@@ -1,0 +1,26 @@
+{
+    "name": "panel-boss",
+    "main": "./src/index",
+    "version": "0.0.0",
+    "description": "lollers matoinner",
+    "keywords": [
+      "panel",
+      "ui",
+      "gui",
+      "user-interface",
+      "interface",
+      "drag",
+      "workspace",
+      "personalize",
+      "customize",
+      "custom"
+    ],
+    "repository": "https://github.com/tuomashatakka/panel-boss",
+    "license": "MIT",
+    "engines": {
+        "atom": ">=1.0.0 <2.0.0"
+    },
+    "dependencies": {
+        "etch": "0.9.5"
+    }
+}

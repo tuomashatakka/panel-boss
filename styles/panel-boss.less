@@ -1,0 +1,71 @@
+// The ui-variables file is provided by base themes provided by Atom.
+//
+// See https://github.com/atom/atom-dark-ui/blob/master/styles/ui-variables.less
+// for a full listing of what's available.
+@import "ui-variables";
+@import "syntax-variables";
+
+.panel-boss {
+}
+
+dev-console {
+  @line-height: 1.75em;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    background: transparent;
+    width: 6px !important;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #f33e3e !important;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(232, 80, 189, 0.02) !important;
+  }
+  code {
+    font-size: 10px;
+    font-family: Source Code Pro;
+    font-weight: 300;
+    line-height: @line-height;
+    display: block }
+
+  article {
+    display: block;
+    padding: 0 0 @component-padding }
+
+  .key:hover {
+    background: red;
+  }
+  @key: #f0425c;
+  .sep {
+    opacity: 0.5 }
+  .key {
+    font-weight: 500;
+    line-height: @line-height;
+    vertical-align: middle;
+    color: @key }
+  .key .sep {
+    color: @key }
+  .value {
+    line-height: @line-height;
+    // max-height: @line-height;
+    vertical-align: middle;
+    overflow: hidden }
+  .key.number {
+    color: mix(#66fd97, @key) }
+  .value.number {
+    color: #66fd97 }
+  .array {
+    color: #94def3 }
+  .indent {
+    padding-left: 0 }
+  .indent .indent {
+    padding-left: 1em }
+  .indent.open {
+    > .value {
+      max-height: none;
+    }
+  }
+}
