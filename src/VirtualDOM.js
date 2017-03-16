@@ -28,22 +28,6 @@ const coord = ({ clientX: x=0, clientY: y=0, z=0 }) => {
   return [ x, y, z ]
 }
 
-
-const develop = () => {
-  // console.clear()
-  // atom.packages.getLoadedPackage('tree-view').activationPromise.then(e => {
-  //
-  //   console.log(vDOM.panels)
-  //   console.log(vDOM.panels.find(o => o.name === 'Tree View'))
-  //
-  //   atom.views.getView(
-  //     vDOM.panels
-  //     .find(o => o.name === 'Tree View'))
-  //     .appendChild(vDOM.refs.resize.element)
-  // })
-}
-
-
 let _preview, _containers
 class MutationInterface {
 
@@ -90,6 +74,7 @@ class MutationInterface {
       width += x
     else if (pos === 'right')
       width -= x
+
     return width
   }
 
@@ -103,6 +88,7 @@ class MutationInterface {
       height += y
     else if (pos === 'bottom')
       height -= y
+
     return height
   }
 
@@ -116,13 +102,20 @@ class MutationInterface {
   }
 
   set panel (panel: AtomPanelType) {
-    this._panel = panel
+
     let root = panel.getItem ? panel.getItem() : atom.views.getView(panel)
+
     if (root && root.element)
       root = root.element
-    root.appendChild(this.element)
     this.position = null
+    this._panel = panel
     this._root = root
+
+    let el = root
+    while (el.tagName !== 'ATOM-PANEL') {
+      el = el.parentElement
+    }
+    el.appendChild(this.element)
   }
 
   constructor() {
@@ -150,10 +143,12 @@ class MutationInterface {
     let parent = _preview.parentElement
     if (this.panel && !parent) {
       parent = atom.views.getView(this.panel)
-      while (!parent.tagName === 'ATOM-PANEL-CONTAINER') {
+      while (parent.tagName !== 'ATOM-PANEL-CONTAINER') {
+        console.log(parent)
         parent = parent.parentElement
         if (!parent) break
       }
+      console.log(parent)
       parent.appendChild(_preview)
     }
     return _preview
@@ -267,31 +262,17 @@ export default class VirtualDOM extends Emitter {
 
   constructor () {
     super()
-    this.updatePanels()
     window.vDOM = this
+
     this.refs = {
       resize: new ResizeHandler(),
     }
 
-    // FIXME: DEBUG
-    develop()
-    this.observePanelChanges = this.observePanelChanges.bind(this)
+    this.bindMouseEnter = this.bindMouseEnter.bind(this)
     this.subscriptions = this.registerPanelChangeObservers()
   }
 
-  updatePanels () {
-    for (let panel of this.panels) {
-      this.decoratePanel(panel)
-    }
-  }
-
-  decoratePanel (panel: AtomPanelType) {
-    console.log(panel)
-  }
-
-  observePanelChanges (panel: AtomPanelType) {
-
-    console.log(panel) // FIXME: Remove
+  bindMouseEnter (panel: AtomPanelType) {
 
     let view = atom.views.getView(panel)
         view = view && view.element ? view.element : view
@@ -299,21 +280,19 @@ export default class VirtualDOM extends Emitter {
     let callback = e => !ref.state.mutating ? ref.panel = panel : null
     let attach = () => view.addEventListener('mouseenter', callback)
     let remove = () => view.removeEventListener('mouseenter', callback)
+
     attach()
     return new Disposable(remove)
-
   }
 
   registerPanelChangeObservers () {
-
     let subscriptions = new CompositeDisposable()
-    let containers = this.containers
 
     this.panels.forEach(panel =>
-      subscriptions.add(this.observePanelChanges(panel)))
+      subscriptions.add(this.bindMouseEnter(panel)))
 
-    containers.forEach(container =>
-      subscriptions.add(container.onDidAddPanel(({panel}) => this.observePanelChanges(panel))))
+    this.containers.forEach(container =>
+      subscriptions.add(container.onDidAddPanel(({panel}) => this.bindMouseEnter(panel))))
 
     return subscriptions
   }
@@ -325,7 +304,6 @@ export default class VirtualDOM extends Emitter {
     let { left, right, top, bottom } = panelContainers
     _containers = { left, right, top, bottom }
     _containers.forEach = function(fnc) {
-      fnc = fnc.bind(_containers)
       return (['left', 'right', 'top', 'bottom']).forEach(dir => {
         let container = _containers[dir]
         fnc(container)

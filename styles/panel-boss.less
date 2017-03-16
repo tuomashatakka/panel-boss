@@ -5,8 +5,9 @@
 @import "ui-variables";
 @import "syntax-variables";
 
-@handle-width: 1.33em;
+@handle-size: 1.33em;
 @resize-duration: 300ms;
+@resize-accent-color: #fe1a5e;
 
 atom-panel > * {
   transition-property: width, height;
@@ -15,54 +16,70 @@ atom-panel > * {
 atom-panel.mutation-preview {
   position: fixed;
   z-index: 1000;
-  transition-duration: 0s;
-  background: fade(#fe1a5e, 35%) !important }
+  transition: opacity @resize-duration 1s;
+  opacity: 0;
+  background: fade(@resize-accent-color, 25%) !important }
+
+atom-panel-container:hover atom-panel .resize-handle {
+  opacity: 1;
+  transition-delay: 0.2s;
+  transition-duration: 0.5s;
+}
 
 atom-panel .resize-handle {
   position: absolute;
   background: transparent;
+  opacity: 0;
+  transition: opacity @resize-duration 1s;
   z-index: 10;
 
   &::before {
     content: "";
     display: block;
-    background: red;
-    width: 100%;
+    background: fade(@resize-accent-color, 50%);
+    width: auto;
     height: 100%;
-    margin: @handle-width / 2.1;
+    margin: 0 @handle-size / 2.1;
   }
 
   atom-panel-container.left &,
   atom-panel-container.right & {
-    &::before { width: 1px }
+
+    &::before {
+      width: 1px }
+
     cursor: col-resize;
-    width: @handle-width !important;
+    width: @handle-size !important;
     height: 100% !important }
 
   atom-panel-container.top &,
   atom-panel-container.bottom & {
-    &::before { height: 1px }
+
+    &::before {
+      margin: @handle-size / 2.1 0;
+      height: 1px }
+
     cursor: row-resize;
-    height: @handle-width !important;
+    height: @handle-size !important;
     width: 100% !important }}
 
 atom-panel.left .resize-handle {
-  right: -@handle-width / 2 !important;
+  right: -@handle-size / 2 !important;
   top: 0 !important;
   bottom: 0 !important }
 
 atom-panel.right .resize-handle {
-  left: @handle-width / 2 !important;
+  left: -@handle-size / 2 !important;
   top: 0 !important;
   bottom: 0 !important }
 
 atom-panel.top .resize-handle {
-  bottom: @handle-width / 2 !important;
+  bottom: -@handle-size / 2 !important;
   left: 0 !important;
   right: 0 !important }
 
 atom-panel.bottom .resize-handle {
-  top: -@handle-width / 2 !important;
+  top: -@handle-size / 2 !important;
   left: 0 !important;
   right: 0 !important }
 

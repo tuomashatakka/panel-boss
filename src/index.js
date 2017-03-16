@@ -14,7 +14,6 @@ export default {
   activate(state) {
     atom.notifications.addInfo('PanelBOSS>init')
     const dom = new vDOM()
-    console.log(dom)
     this.panelBossView = state.panelBossViewState;
     this.modalPanel = atom.workspace.addModalPanel({
       item: document.createElement('div'),
@@ -29,6 +28,8 @@ export default {
   deactivate() {
     this.modalPanel.destroy()
     this.subscriptions.dispose()
+    if (window.vDOM)
+      window.vDOM.destroy()
   },
 
   serialize() {
