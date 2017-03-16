@@ -31,8 +31,29 @@ function logCollapseHandler ({ target }) {
   }
 }
 
+
 function getConsule () {
+
+  let item = document.querySelector('dev-console') ||
+             document.createElement('dev-console')
+  let className = 'dev-console'
+  item.classList.add('padded')
+  item.style.width = '360px'
+
+  if (!item.firstElementChild)
+    item.appendChild(document.createElement('code'))
+
   window.consule = {//window.consule || {
+
+    item,
+    getPanel: () => window.consule.panel ||
+      document.querySelector('atom-panel.dev-console') ||
+      window.atom.workspace.addRightPanel({ item: window.consule.item, className }),
+
+    clear: function () {
+      window.consule.item.firstElementChild.innerHTML = ''
+    },
+
     log: function() {
       try {
         let log = document.createElement('article')
@@ -55,6 +76,7 @@ function getConsule () {
           else {
             let col = isNaN(parseInt(key))
             el = 'span'
+            value = `<div class='indent'>${value} ${arrayClose}</div>`
             key = col ? `${key}${sep}` : ''
           }
           let indent = make('div', 'indent')
@@ -63,10 +85,11 @@ function getConsule () {
           return indent
         }
         const recurse = (obj={}, z=0, depthLimit=1) => {
+
           let accr = ''
-          console.log(z, depthLimit)
-          if (z > maxRecursionDepth)
-            return obj.toString()
+          if (z > depthLimit)
+            return ''
+
           for (let key in obj) {
             let att = obj[key]
             if (!att)
@@ -77,13 +100,16 @@ function getConsule () {
           }
           return accr
         }
+
         let content = ''
-        for (const arg of [...arguments]) {
+        let args = [...arguments]
+        console.log(args)
+        for (let arg of args) {
           let el = document.createElement('section')
-          el.innerHTML = recurse(arguments, 0, 0)//, maxRecursionDepth)
-          el.addEventListener('click', e => {
-            consule.log(...arg)
-          })
+          el.innerHTML = recurse(arg, 0, 1)//, maxRecursionDepth)
+          // el.addEventListener('click', e => {
+          //   consule.log(...arg)
+          // })
           log.appendChild(el)
         }
         window.consule.item.firstElementChild.appendChild(log)
@@ -91,26 +117,18 @@ function getConsule () {
       catch (e) {
         console.log("consule.log.error.message.lol ->", e)
       }
-    }
+    },
   }
 
-  let item = document.querySelector('dev-console') ||
-             document.createElement('dev-console')
-  let className = 'dev-console'
-  item.classList.add('padded')
-  item.style.width = '360px'
 
-  if (!item.firstElementChild)
-    item.appendChild(document.createElement('code'))
 
-  console.log(item)
-  consule.panel = consule.panel || atom.workspace.addRightPanel({ item, className })
   if (!document.querySelector('atom-panel.dev-console')) {
-    // consule.panel.item.removeEventListener('click', logCollapseHandler)
-    consule.panel.onclickHandler = consule.panel.item.addEventListener('click', logCollapseHandler, true )
+    consule.getPanel().onclickHandler = consule.item.addEventListener('click', logCollapseHandler, true )
   }
-  consule.item = consule.panel.item
   return consule
 }
+
+
 window.consule = getConsule()
+window.consule.clear()
 export default window.consule

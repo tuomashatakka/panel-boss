@@ -5,39 +5,95 @@
 @import "ui-variables";
 @import "syntax-variables";
 
-.panel-boss {
-}
+@handle-width: 1.33em;
+@resize-duration: 300ms;
+
+atom-panel > * {
+  transition-property: width, height;
+  transition-duration: @resize-duration }
+
+atom-panel.mutation-preview {
+  position: fixed;
+  z-index: 1000;
+  transition-duration: 0s;
+  background: fade(#fe1a5e, 35%) !important }
+
+atom-panel .resize-handle {
+  position: absolute;
+  background: transparent;
+  z-index: 10;
+
+  &::before {
+    content: "";
+    display: block;
+    background: red;
+    width: 100%;
+    height: 100%;
+    margin: @handle-width / 2.1;
+  }
+
+  atom-panel-container.left &,
+  atom-panel-container.right & {
+    &::before { width: 1px }
+    cursor: col-resize;
+    width: @handle-width !important;
+    height: 100% !important }
+
+  atom-panel-container.top &,
+  atom-panel-container.bottom & {
+    &::before { height: 1px }
+    cursor: row-resize;
+    height: @handle-width !important;
+    width: 100% !important }}
+
+atom-panel.left .resize-handle {
+  right: -@handle-width / 2 !important;
+  top: 0 !important;
+  bottom: 0 !important }
+
+atom-panel.right .resize-handle {
+  left: @handle-width / 2 !important;
+  top: 0 !important;
+  bottom: 0 !important }
+
+atom-panel.top .resize-handle {
+  bottom: @handle-width / 2 !important;
+  left: 0 !important;
+  right: 0 !important }
+
+atom-panel.bottom .resize-handle {
+  top: -@handle-width / 2 !important;
+  left: 0 !important;
+  right: 0 !important }
 
 dev-console {
   @line-height: 1.75em;
   overflow-y: auto;
 
-  &::-webkit-scrollbar {
-    background: transparent;
-    width: 6px !important;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #f33e3e !important;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: rgba(232, 80, 189, 0.02) !important;
-  }
   code {
     font-size: 10px;
     font-family: Source Code Pro;
     font-weight: 300;
     line-height: @line-height;
-    display: block }
+    flex-direction: column-reverse;
+    display: flex }
 
   article {
     display: block;
     padding: 0 0 @component-padding }
 
+  &::-webkit-scrollbar {
+    background: transparent;
+    width: 6px !important }
+
+  &::-webkit-scrollbar-thumb {
+    background: #f33e3e !important }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(232, 80, 189, 0.02) !important }
+
   .key:hover {
-    background: red;
-  }
+    background: red }
   @key: #f0425c;
   .sep {
     opacity: 0.5 }
@@ -50,7 +106,6 @@ dev-console {
     color: @key }
   .value {
     line-height: @line-height;
-    // max-height: @line-height;
     vertical-align: middle;
     overflow: hidden }
   .key.number {
@@ -65,7 +120,4 @@ dev-console {
     padding-left: 1em }
   .indent.open {
     > .value {
-      max-height: none;
-    }
-  }
-}
+      max-height: none }}}

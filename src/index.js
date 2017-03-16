@@ -2,7 +2,7 @@
 
 import Draggable from './Draggable.jsx'
 import vDOM from './VirtualDOM'
-import consule from './dev'
+// import consule from './dev'
 import { CompositeDisposable } from 'atom'
 
 export default {
@@ -14,7 +14,7 @@ export default {
   activate(state) {
     atom.notifications.addInfo('PanelBOSS>init')
     const dom = new vDOM()
-    consule.log(dom)
+    console.log(dom)
     this.panelBossView = state.panelBossViewState;
     this.modalPanel = atom.workspace.addModalPanel({
       item: document.createElement('div'),

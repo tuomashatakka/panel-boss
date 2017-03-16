@@ -2,6 +2,6 @@
 # yarn lockfile v1
 
 
-etch@0.9.5:
-  version "0.9.5"
-  resolved "https://registry.yarnpkg.com/etch/-/etch-0.9.5.tgz#6c92b7f63000525b9797de23e3b41e109a688fbc"
+etch@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/etch/-/etch-0.10.0.tgz#5ed8b49db953a36b3f51fcad092b9681e24906b0"
