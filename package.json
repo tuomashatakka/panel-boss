@@ -26,7 +26,7 @@
         "custom",
         "modify"
     ],
-    "repository": "git@github.com:tuomashatakka/panel-boss.git",
+    "repository": "https://github.com/tuomashatakka/panel-boss",
     "license": "MIT",
     "engines": {
         "atom": ">=1.0.0 <2.0.0"
