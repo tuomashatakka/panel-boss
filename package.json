@@ -1,37 +1,37 @@
 {
-    "name": "panel-boss",
-    "main": "./src/index",
-    "version": "0.0.0",
-    "description": "lollers matoinner",
-    "author": "Tuomas Hatakka",
-    "keywords": [
-        "panel",
-        "panels",
-        "ui",
-        "gui",
-        "user-interface",
-        "interface",
-        "layout",
-        "resize",
-        "reorder",
-        "order",
-        "drag",
-        "dnd",
-        "drag-and-drop",
-        "workspace",
-        "personalize",
-        "personalization",
-        "composition",
-        "customize",
-        "custom",
-        "modify"
-    ],
-    "repository": "https://github.com/tuomashatakka/panel-boss",
-    "license": "MIT",
-    "engines": {
-        "atom": ">=1.0.0 <2.0.0"
-    },
-    "dependencies": {
-        "etch": "^0.10.0"
-    }
+  "name": "panel-boss",
+  "main": "./src/index",
+  "version": "0.0.1",
+  "description": "lollers matoinner",
+  "author": "Tuomas Hatakka",
+  "keywords": [
+    "panel",
+    "panels",
+    "ui",
+    "gui",
+    "user-interface",
+    "interface",
+    "layout",
+    "resize",
+    "reorder",
+    "order",
+    "drag",
+    "dnd",
+    "drag-and-drop",
+    "workspace",
+    "personalize",
+    "personalization",
+    "composition",
+    "customize",
+    "custom",
+    "modify"
+  ],
+  "repository": "https://github.com/tuomashatakka/panel-boss",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {
+    "etch": "^0.10.0"
+  }
 }
