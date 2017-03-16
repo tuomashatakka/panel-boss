@@ -1,9 +1,14 @@
 # Panel BOSS
 
-*Be the boss of your (i)DE - drag n' drop them panels like you had never dnd'd before*
+*Be the boss of your (i)DE - resize any panel to any size at any time*
 
-This package makes what Atom.io should have included in its core:
-an ability to reorder the panels to one's heart's content.
+Resize and reorder any panel in Atom workspace any way you'll want to your heart's content.
 
-Drag and drop any panel **literally** anywhere! Well not yet,
-but as I've had time to functionalize the sh** (`shell script`) out of this package.
+
+### A look into the future
+
+ - Possibility to reorder panels
+ - Stack and resize left and right panels vertically, and top and bottom panels
+   horizontally
+
+COMING SOON™ - The dnd features are coming as soon as I have time to functionalize the sh** (`shell script`) out of this package.

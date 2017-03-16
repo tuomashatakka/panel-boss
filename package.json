@@ -3,19 +3,30 @@
     "main": "./src/index",
     "version": "0.0.0",
     "description": "lollers matoinner",
+    "author": "Tuomas Hatakka",
     "keywords": [
         "panel",
+        "panels",
         "ui",
         "gui",
         "user-interface",
         "interface",
+        "layout",
+        "resize",
+        "reorder",
+        "order",
         "drag",
+        "dnd",
+        "drag-and-drop",
         "workspace",
         "personalize",
+        "personalization",
+        "composition",
         "customize",
-        "custom"
+        "custom",
+        "modify"
     ],
-    "repository": "https://github.com/tuomashatakka/panel-boss",
+    "repository": "git@github.com:tuomashatakka/panel-boss.git",
     "license": "MIT",
     "engines": {
         "atom": ">=1.0.0 <2.0.0"
