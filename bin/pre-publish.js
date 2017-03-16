@@ -11,6 +11,7 @@ const p = d => `${path}/${d}`
 
 function getDescription () {
   let readme = readFileSync(p('README.md'), 'utf8')
+  console.log(markdownEmphasis)
   return markdownEmphasis.exec(readme)[1]
 }
 
@@ -19,7 +20,17 @@ function overwritePackageProps (props={}) {
 
   // Replace the given properties for the package
   for (let prop in props) {
-    package[prop] = props[prop]
+    if (package[prop]) {
+      console.log(package[prop])
+      if (package[prop].constructor.name === 'Array')
+        package[prop] = package[prop].concat(props[prop])
+      else if (package[prop].constructor.name === 'Object')
+        package[prop] = Object.assign(package[prop], props[prop])
+      else
+        package[prop] = props[prop]
+    }
+    else
+      package[prop] = props[prop]
   }
 
   // JSON encode
@@ -38,7 +49,13 @@ function overwritePackageProps (props={}) {
 function __main() {
 
   let description = getDescription()
+  let author = "Tuomas Hatakka"
+  let repository = "https://github.com/tuomashatakka/panel-boss"
+  let keywords = ["asd", "basd"]
   let properties = {
+    author,
+    repository,
+    keywords,
     description }
 
   overwritePackageProps(properties)
