@@ -136,32 +136,34 @@ class MutationInterface {
   }
 
   get preview (): Element {
+
     if (!_preview) {
       _preview = document.createElement('atom-panel')
       _preview.classList.add('mutation-preview')
+      _preview.classList.add(this.previewClassName)
     }
+
     let parent = _preview.parentElement
     if (this.panel && !parent) {
       parent = atom.views.getView(this.panel)
       while (parent.tagName !== 'ATOM-PANEL-CONTAINER') {
-        console.log(parent)
         parent = parent.parentElement
         if (!parent) break
       }
-      console.log(parent)
       parent.appendChild(_preview)
     }
     return _preview
+
   }
 
   drawPreview () {
 
     let { amount, position } = this.anchor
+    console.log(this.width, this.height, position, amount)
     this.preview.setAttribute('style', `
       width: ${this.width}px;
       height: ${this.height}px;
-      ${position}: ${amount}px;
-      `)
+      ${position}: ${amount}px; `)
   }
 
   async onMutate (event) {
@@ -172,6 +174,8 @@ class MutationInterface {
     let diff = [ xc - x, yc - y ]
     this.updateState({ co_end, diff })
     this.drawPreview()
+    if (this.quarter)
+      console.log("drag", this.quarter)
   }
 
   onMutationBegin (event) {
@@ -208,15 +212,7 @@ class ResizeHandler extends MutationInterface {
   element: Element
   root: Element
   vDOM: {}
-
-  get clientRect () {
-    return this.view.getBoundingClientRect()
-  }
-
-  get dimensions () {
-    let { width, height } = this.clientRect
-    return { width, height }
-  }
+  previewClassName: string = 'resize-preview'
 
   constructor () {
     super()
@@ -231,7 +227,7 @@ class ResizeHandler extends MutationInterface {
   }
 
   saveInitialDimensions () {
-    let { width, height } = this.clientRect
+    let { width, height } = this.view.getBoundingClientRect()
     let axis = this.axis
     if(!this.view.getAttribute('data-original-width'))
       this.view.setAttribute('data-original-width', width.toString())
@@ -258,6 +254,93 @@ class ResizeHandler extends MutationInterface {
   }
 }
 
+class DragHandler extends MutationInterface {
+
+  state = { co: [], co_end: [] }
+  element: Element
+  root: Element
+  vDOM: {}
+  previewClassName: string = 'drag-preview'
+
+  constructor () {
+    super()
+    etch.initialize(this)
+    this.onStart = () => this.initialContainer = this.panel
+    this.onEnd = () => {
+      this.axis = this.position
+    }
+    console.log(this)
+  }
+
+  get quarter (): [number, string|null] {
+    let { co_end: [ x, y ]} = this.state
+    let w = window.innerWidth
+    let h = window.innerHeight
+    let bounds  = [
+      [y / h,       'top'],
+      [x / w,       'left'],
+      [(w - x) / w, 'right'],
+      [(h - y) / h, 'bottom'],
+    ]
+    return bounds.reduce((sum, iter) => {
+       let [val, ]  = iter
+       let [cmp, ]   = sum
+       return (val > cmp) ? sum : iter
+    }, [1, null])
+  }
+
+  get axis () {
+    this.position = this.quarter[1]
+    this.preview.classList.remove('left')
+    this.preview.classList.remove('right')
+    this.preview.classList.remove('top')
+    this.preview.classList.remove('bottom')
+    this.preview.classList.add(this.position)
+    return this.position
+  }
+
+  set axis (target: string) {
+    atom.workspace.addPanel(target, this.panel)
+  }
+
+  get anchor () {
+    return { position: this.axis, amount: 0 }
+  }
+
+  get width () {
+    if (this.vertical)
+      return window.innerWidth
+    let { width } = this.view.getBoundingClientRect()
+    return width
+  }
+
+  get height () {
+    if (this.horizontal)
+      return window.innerHeight
+    let { height } = this.view.getBoundingClientRect()
+    return height
+  }
+
+  /**
+   * Update the etch properties
+   * @method update
+   */
+
+  update () {
+
+  }
+
+  render () {
+    return (
+      <div
+      onMouseDown={this.onMutationBegin}
+      className='drag-handle'>
+      </div>
+    )
+  }
+}
+
+
 export default class VirtualDOM extends Emitter {
 
   constructor () {
@@ -266,6 +349,7 @@ export default class VirtualDOM extends Emitter {
 
     this.refs = {
       resize: new ResizeHandler(),
+      drag: new DragHandler(),
     }
 
     this.bindMouseEnter = this.bindMouseEnter.bind(this)
@@ -277,7 +361,11 @@ export default class VirtualDOM extends Emitter {
     let view = atom.views.getView(panel)
         view = view && view.element ? view.element : view
     let ref = this.refs.resize
-    let callback = e => !ref.state.mutating ? ref.panel = panel : null
+    let dref = this.refs.drag
+    let callback = e => {
+      if(!ref.state.mutating) ref.panel = panel
+      if(!dref.state.mutating) dref.panel = panel
+    }
     let attach = () => view.addEventListener('mouseenter', callback)
     let remove = () => view.removeEventListener('mouseenter', callback)
 

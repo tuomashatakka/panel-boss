@@ -13,18 +13,47 @@ atom-panel > * {
   transition-property: width, height;
   transition-duration: @resize-duration }
 
-atom-panel.mutation-preview {
-  position: fixed;
-  z-index: 1000;
-  transition: opacity @resize-duration 1s;
-  opacity: 0;
+atom-panel-container > atom-panel.mutation-preview {
+  position: fixed !important;
+  z-index: 1000 !important;
   background: fade(@resize-accent-color, 25%) !important }
+
+.drag-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: blue;
+  height: 4em !important;
+}
+
+.drag-preview.left {
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+.drag-preview.right {
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+.drag-preview.top {
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.drag-preview.bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
 
 atom-panel-container:hover atom-panel .resize-handle {
   opacity: 1;
   transition-delay: 0.2s;
   transition-duration: 0.5s;
-}
+  background: fade(@resize-accent-color, 2%) !important }
 
 atom-panel .resize-handle {
   position: absolute;
