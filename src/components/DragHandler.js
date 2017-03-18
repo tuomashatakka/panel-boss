@@ -50,7 +50,6 @@ export default class DragHandler extends MutationInterface {
   }
 
   set axis (targetArea: string) {
-    console.log(this.panel, this.view, this.preview)
     ancestor(this.view).remove()
     this.previewElement.remove()
     atom.workspace.addPanel(targetArea, this.panel)
@@ -72,15 +71,6 @@ export default class DragHandler extends MutationInterface {
       return window.innerHeight
     let { height } = this.view.getBoundingClientRect()
     return height
-  }
-
-  /**
-   * Update the etch properties
-   * @method update
-   */
-
-  update () {
-
   }
 
   render () {

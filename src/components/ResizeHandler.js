@@ -37,15 +37,6 @@ export default class ResizeHandler extends MutationInterface {
       this.view.setAttribute('data-original-height', height.toString())
   }
 
-  /**
-   * Update the etch properties
-   * @method update
-   */
-
-  update () {
-
-  }
-
   render () {
     return (
       <div

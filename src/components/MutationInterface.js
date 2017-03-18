@@ -33,21 +33,21 @@ let _containers
 
 export default class MutationInterface {
 
-  _root: Element|null
+  _root: any
   _panel: AtomPanelType
 
   handleClassName: string
   previewClassName: string
   position: string|null
   previewElement: Element
-  element: Element
+  element: HTMLElement
   state: {
     co: Array<number>,
     co_end: Array<number>,
-    diff: Array<number>,
+    diff?: Array<number>|void,
   }
 
-  get axis () {
+  get axis (): string {
     if (this.position)
       return this.position
     let cls = atom.views.getView(this.panel).classList
@@ -59,24 +59,21 @@ export default class MutationInterface {
     return this.position
   }
 
-  get horizontal () { return this.axis === 'left' || this.axis === 'right' }
-  get vertical () {   return this.axis === 'top' || this.axis === 'bottom' }
-  get inversed () {   return this.axis === 'right' || this.axis === 'bottom' }
+  get horizontal (): bool { return this.axis === 'left' || this.axis === 'right' }
+  get vertical (): bool {   return this.axis === 'top' || this.axis === 'bottom' }
+  get inversed (): bool {   return this.axis === 'right' || this.axis === 'bottom' }
 
-  get anchor () {
+  get anchor (): { position: string, amount: number } {
     // right panels
     let rect = this.view.getBoundingClientRect()
     let position = this.axis
     let amount = rect[position]
     if (this.inversed)
       amount = window['inner' + (this.horizontal ? 'Width' : 'Height')] - amount
-
-    let x = amount
-    let y = amount
-    return { x, y, position, amount }
+    return { position, amount }
   }
 
-  get width () {
+  get width (): number {
     // right panels
     let { width } = this.view.getBoundingClientRect()
     let [ x, y ] = this.state.diff
@@ -90,7 +87,7 @@ export default class MutationInterface {
     return width
   }
 
-  get height () {
+  get height (): number {
     // right panels
     let { height } = this.view.getBoundingClientRect()
     let [ x, y ] = this.state.diff
@@ -114,17 +111,20 @@ export default class MutationInterface {
 
   set panel (panel: AtomPanelType) {
 
+    if (!panel)
+      return
     let root = panel.getItem ? panel.getItem() : atom.views.getView(panel)
 
     this.position = null
     this._panel   = panel
     this._root    = root ? root.element || root : null
-
+    console.log(this.panel, panel)
     ancestor(this._root).appendChild(this.element)
   }
 
-  constructor() {
+  constructor () {
     this.format()
+    console.log(this)
     this.onMutationBegin = this.onMutationBegin.bind(this)
     this.onMutationFinish = this.onMutationFinish.bind(this)
     this.onMutate = this.onMutate.bind(this)
@@ -156,10 +156,13 @@ export default class MutationInterface {
 
   }
 
+  update () {
+
+  }
+
   drawPreview () {
 
     let { amount, position } = this.anchor
-    console.log(this.width, this.height, position, amount)
     this.preview.setAttribute('style', `
       width: ${this.width}px;
       height: ${this.height}px;
@@ -210,7 +213,6 @@ export default class MutationInterface {
   }
 
   format () {
-    console.log("etsh", this)
     this.destroy()
   }
 

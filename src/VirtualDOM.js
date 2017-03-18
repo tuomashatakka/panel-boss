@@ -30,14 +30,11 @@ export default class VirtualDOM extends Emitter {
 
     let view = atom.views.getView(panel)
         view = view && view.element ? view.element : view
+
     let callback = e => Object.keys(this.refs).forEach(ref =>
-        !this.refs[ref].state.mutating ?
-         this.refs[ref].panel = panel : null)
+      this.refs[ref].panel = !this.refs[ref].state.mutating ? panel : null)
     let attach = () => view.addEventListener('mouseenter', callback)
-    let remove = () => {
-      console.log(view)
-      view.removeEventListener('mouseenter', callback)
-    }
+    let remove = () => view.removeEventListener('mouseenter', callback)
 
     attach()
     return new Disposable(() => remove())
@@ -88,18 +85,11 @@ export default class VirtualDOM extends Emitter {
 
     let axises = this.containers
     const search = ({panels}) =>
-      panels.find(item => {
-        console.log(item, panel)
-        return item === item
-      })
+      panels.find(item => item === item)
 
-    for (let dir in axises) {
-      console.info("axis", dir)
-      if (search(axises[dir])) {
+    for (let dir in axises)
+      if (search(axises[dir]))
         return dir.toString()
-      }
-    }
-
     return 'unknown'
   }
 
