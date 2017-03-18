@@ -4,14 +4,14 @@
 /** @jsx etch.dom */
 
 
-import { initialize } from 'etch'
+import etch from 'etch'
 
+const init = function() { etch.initialize(this) }
 
 export default class Draggable {
 
   constructor () {
-
-    initialize(this)
+    init()
 
   }
 

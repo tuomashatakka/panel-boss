@@ -1,14 +1,16 @@
-// The ui-variables file is provided by base themes provided by Atom.
-//
-// See https://github.com/atom/atom-dark-ui/blob/master/styles/ui-variables.less
-// for a full listing of what's available.
 @import "ui-variables";
 @import "syntax-variables";
 
 @handle-size: 1.33em;
 @resize-duration: 300ms;
-@resize-accent-color: #fe1a5e;
+// @resize-color: #fe1a5e;
+@resize-color: @background-color-info;
+@drag-color: @background-color-info;
 
+atom-panel.top {
+  min-height: 5vh }
+atom-panel.bottom {
+  min-height: 5vh }
 atom-panel > * {
   transition-property: width, height;
   transition-duration: @resize-duration }
@@ -16,45 +18,50 @@ atom-panel > * {
 atom-panel-container > atom-panel.mutation-preview {
   position: fixed !important;
   z-index: 1000 !important;
-  background: fade(@resize-accent-color, 25%) !important }
+  background: fade(@resize-color, 15%) !important }
+
+.panel-boss-active {
+  cursor: -webkit-grabbing !important;
+  -webkit-user-select: none }
 
 .drag-handle {
+  cursor: -webkit-grab !important;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
-  background: blue;
-  height: 4em !important;
-}
+  z-index: 1500;
+  background: fade(@drag-color, 10%) !important;
+  height: @handle-size !important }
 
+.drag-preview.right,
 .drag-preview.left {
-  top: 0;
-  bottom: 0;
-  left: 0;
-}
-.drag-preview.right {
-  top: 0;
-  bottom: 0;
-  right: 0;
-}
+  top: 0 !important;
+  bottom: 0 !important;
+  max-width: 25vh }
+.drag-preview.bottom,
 .drag-preview.top {
-  top: 0;
-  left: 0;
-  right: 0;
-}
+  left: 0 !important;
+  right: 0 !important;
+  max-height: 25vh }
+.drag-preview.left {
+  left: 0 }
+.drag-preview.right {
+  right: 0 }
+.drag-preview.top {
+  top: 0 }
 .drag-preview.bottom {
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
+  bottom: 0 }
 
+atom-panel-container:hover atom-panel .drag-handle,
 atom-panel-container:hover atom-panel .resize-handle {
   opacity: 1;
   transition-delay: 0.2s;
-  transition-duration: 0.5s;
-  background: fade(@resize-accent-color, 2%) !important }
+  transition-duration: 0.5s }
 
+atom-panel .drag-handle {
+  opacity: 0;
+  transition: opacity @resize-duration 1s }
 atom-panel .resize-handle {
   position: absolute;
   background: transparent;
@@ -65,7 +72,7 @@ atom-panel .resize-handle {
   &::before {
     content: "";
     display: block;
-    background: fade(@resize-accent-color, 50%);
+    background: fade(@resize-color, 50%);
     width: auto;
     height: 100%;
     margin: 0 @handle-size / 2.1;
@@ -92,25 +99,18 @@ atom-panel .resize-handle {
     height: @handle-size !important;
     width: 100% !important }}
 
+atom-panel.right .resize-handle,
 atom-panel.left .resize-handle {
-  right: -@handle-size / 2 !important;
   top: 0 !important;
   bottom: 0 !important }
-
-atom-panel.right .resize-handle {
-  left: -@handle-size / 2 !important;
-  top: 0 !important;
-  bottom: 0 !important }
-
-atom-panel.top .resize-handle {
-  bottom: -@handle-size / 2 !important;
-  left: 0 !important;
-  right: 0 !important }
-
+atom-panel.top .resize-handle,
 atom-panel.bottom .resize-handle {
-  top: -@handle-size / 2 !important;
   left: 0 !important;
   right: 0 !important }
+atom-panel.left .resize-handle {  right: -@handle-size / 2 !important }
+atom-panel.right .resize-handle { left: -@handle-size / 2 !important }
+atom-panel.top .resize-handle { bottom: -@handle-size / 2 !important }
+atom-panel.bottom .resize-handle { top: -@handle-size / 2 !important }
 
 dev-console {
   @line-height: 1.75em;
