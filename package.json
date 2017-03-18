@@ -1,7 +1,7 @@
 {
   "name": "panel-boss",
   "main": "./src/index",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Be the boss of your (i)DE - resize any panel to any size at any time",
   "author": "Tuomas Hatakka",
   "scripts": {
