@@ -6,38 +6,44 @@ import { CompositeDisposable, Disposable, Emitter } from 'atom'
 import etch from 'etch'
 import ResizeHandler from './components/ResizeHandler'
 import DragHandler from './components/DragHandler'
+import PanelManager from './PanelManager'
 
 let _containers
 
 export default class VirtualDOM extends Emitter {
 
+  broadcastTransmission: Event = new Event('panelBOSS')
+
   constructor () {
 
     super()
-    this.refs = this.createHandlerInstances()
     this.bindMouseEnter = this.bindMouseEnter.bind(this)
-    this.subscriptions = this.registerPanelChangeObservers()
+
+    this.subscriptions = new CompositeDisposable()
+    this.subscriptions.add(this.createHandlerInstances())
+    this.subscriptions.add(this.registerPanelChangeObservers())
   }
 
   createHandlerInstances () {
-    return {
-      resize: new ResizeHandler(),
-      drag: new DragHandler(),
-    }
+    this.refs = {
+      manager:  new PanelManager(),
+      resize:   new ResizeHandler(),
+      drag:     new DragHandler() }
+
+    return new Disposable(() => {
+      for (let ref in this.refs) {
+        this.refs[ref].destroy()
+      }
+    })
   }
 
   bindMouseEnter (panel: AtomPanelType) {
 
-    let view = atom.views.getView(panel)
-        view = view && view.element ? view.element : view
-
+    let view = getView(panel)
     let callback = e => Object.keys(this.refs).forEach(ref =>
       this.refs[ref].panel = !this.refs[ref].state.mutating ? panel : null)
-    let attach = () => view.addEventListener('mouseenter', callback)
-    let remove = () => view.removeEventListener('mouseenter', callback)
 
-    attach()
-    return new Disposable(() => remove())
+    return bindDisposableEvent('mouseenter', view, callback)
   }
 
   registerPanelChangeObservers () {
@@ -72,6 +78,14 @@ export default class VirtualDOM extends Emitter {
     return _containers
   }
 
+
+/**
+ * Get a list of customizable panel containers' names
+ *
+ * @getter containerNames
+ * @return Array
+ */
+
   get containerNames (): Array<string> {
     return ['left', 'right', 'top', 'bottom']
   }
@@ -93,11 +107,34 @@ export default class VirtualDOM extends Emitter {
     return 'unknown'
   }
 
+
+  broadcast (eventName, data={}, view=document) {
+    view.dispatchEvent(broadcastTransmission, { eventName, data })
+  }
+
+  listen (eventName, callback, view=document) {
+    let sub = bindDisposableEvent('mouseenter', view, callback)
+    this.subscriptions.add(sub)
+    return sub
+  }
+
   destroy () {
-    for (let ref in this.refs) {
-      this.refs[ref].destroy()
-    }
     this.subscriptions.dispose()
   }
+
+}
+
+function getView (panel) {
+     let view  = atom.views.getView(panel)
+  return view && view.element ? view.element : view
+}
+
+
+function bindDisposableEvent (e, el, callback) {
+
+  let attach = () => el.addEventListener(e, callback)
+  let remove = () => el.removeEventListener(e, callback)
+  attach()
+  return new Disposable(() => remove())
 
 }

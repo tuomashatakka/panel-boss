@@ -1,37 +1,46 @@
 'use babel'
 // @flow
+import { Emitter } from 'atom'
 
-type AtomPanelType = {
-  item: Element,
-  getItem: () => Element
-};
-
-type CoordType = [ number, number ];
-
-type DimensionsType = {
-  width: number,
-  height: number,
-  delta: CoordType
-};
+/**
+ * Parse mouse x and y coordinates from an event object
+ *
+ * @method coord
+ * @param  {Event}
+ * @return {Array}   2-dimensional coordinates as an array
+ */
 
 const coord = ({ clientX: x=0, clientY: y=0 }) => {
   return [ x, y ]
 }
 
+/**
+ * Panel reordering actions map
+ * @type {Object}
+ */
+
 export const INTERACT = {
-  MOVE: 'move',
-  RESIZE: 'resize',
+  RESIZESTART:  'panelResizeStart',
+  RESIZE:       'panelResize',
+  SIZE:         'panelResizeEnd',
+  GRAB:         'panelGrab',
+  DRAG:         'panelDrag',
+  DROP:         'panelDrop',
 }
 
-export const ancestor = (el: Element, tagName: string = 'ATOM-PANEL'): Element => {
-  while(el.tagName !== tagName)
-    el = el.parentElement
-  return el
-}
+
+/**
+ * Find the closest ancestor with the provided tag name
+ * @method ancestor
+ * @return {Element}
+ */
+
+export const ancestor: Element | null = (el: Element, tagName: string = 'ATOM-PANEL') =>
+  !el ? null : el.tagName !== tagName ? ancestor(el.parentElement, tagName) : el
 
 let _containers
 
-export default class MutationInterface {
+export default class MutationInterface extends Emitter {
 
   _root: any
   _panel: AtomPanelType
@@ -45,6 +54,13 @@ export default class MutationInterface {
     co: Array<number>,
     co_end: Array<number>,
     diff?: Array<number>|void,
+  }
+
+  send (message, data={}, ...flags) {
+    this.emit(message, data)
+    console.log(message)
+    if (flags.indexOf('private') === -1)
+      vDOM.broadcast(message, data)
   }
 
   get axis (): string {
@@ -122,6 +138,7 @@ export default class MutationInterface {
   }
 
   constructor () {
+    super()
     this.format()
     this.onMutationBegin = this.onMutationBegin.bind(this)
     this.onMutationFinish = this.onMutationFinish.bind(this)
@@ -176,6 +193,7 @@ export default class MutationInterface {
     this.updateState({ co_end, diff })
     this.drawPreview()
 
+    return typeof this.onUpdate === 'function' ? this.onUpdate() : null
   }
 
   onMutationBegin (event: MouseEvent) {
@@ -188,6 +206,7 @@ export default class MutationInterface {
     document.addEventListener('mousemove', this.onMutate)
     document.addEventListener('mouseup', this.onMutationFinish)
     document.documentElement.classList.add('panel-boss-active')
+
     return typeof this.onStart === 'function' ? this.onStart() : null
   }
 
@@ -199,6 +218,7 @@ export default class MutationInterface {
     document.removeEventListener('mousemove', this.onMutate)
     document.removeEventListener('mouseup', this.onMutationFinish)
     document.documentElement.classList.remove('panel-boss-active')
+
     return typeof this.onEnd === 'function' ? this.onEnd() : null
   }
 

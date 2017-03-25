@@ -84,6 +84,9 @@ atom-panel .resize-handle {
     &::before {
       width: 1px }
 
+    atom-panel > * {
+      height: 100% }
+
     cursor: col-resize;
     width: @handle-size !important;
     height: 100% !important }
@@ -94,6 +97,9 @@ atom-panel .resize-handle {
     &::before {
       margin: @handle-size / 2.1 0;
       height: 1px }
+
+    atom-panel > * {
+      width: 100% }
 
     cursor: row-resize;
     height: @handle-size !important;

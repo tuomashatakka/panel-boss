@@ -4,7 +4,7 @@
 
 import { CompositeDisposable, Disposable, Emitter } from 'atom'
 import etch from 'etch'
-import MutationInterface, { ancestor } from './MutationInterface'
+import MutationInterface, { ancestor, INTERACT } from './MutationInterface'
 
 export default class DragHandler extends MutationInterface {
 
@@ -18,7 +18,15 @@ export default class DragHandler extends MutationInterface {
     super()
     etch.initialize(this)
 
-    this.onStart = () => this.initialContainer = this.panel
+    this.onStart = () => {
+      let { panel } = this
+      this.initialContainer = panel
+      this.send(INTERACT.GRAB, { handler: this, initialContainer: this.initialContainer, panel })
+    }
+    this.onUpdate = () => {
+      let { panel, view } = this
+      this.send(INTERACT.DRAG, { handler: this, panel, view })
+    }
     this.onEnd = () => {
       this.axis = this.position
       atom.notifications.addInfo(this.panel.name + ' panel moved to ' + this.position)
@@ -50,9 +58,24 @@ export default class DragHandler extends MutationInterface {
   }
 
   set axis (targetArea: string) {
-    ancestor(this.view).remove()
-    this.previewElement.remove()
+
+    let { panel, view } = this
+
+    // Store the current container to memory
+    let deprecatedAtomPanelElement = ancestor(view)
+
+    // Add the panel as a new panel to correctly bind
+    // atom's inner panel action event handlers
     atom.workspace.addPanel(targetArea, this.panel)
+    this.send(
+      INTERACT.DROP,
+      { panel, view, handler: this, targetArea })
+
+    // Remove the container after its contents
+    // have been appended to a new host, as well
+    // as the preview panel element
+    deprecatedAtomPanelElement.remove()
+    this.previewElement.remove()
   }
 
   get anchor (): { position: string, amount: number } {

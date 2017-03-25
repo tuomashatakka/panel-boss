@@ -4,6 +4,7 @@ consule
 [include]
 
 [libs]
+conf/**.types?.js
 
 [options]
 unsafe.enable_getters_and_setters=true

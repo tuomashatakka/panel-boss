@@ -1,0 +1,22 @@
+{
+  "behavior": {
+    "title": "Behavior",
+    "type": "object",
+    "properties": {
+      "grid": {
+        "title": "Grid size",
+        "description": "Set the size for the snapping grid (clear to disable snapping)",
+        "type": "number",
+        "default": 0,
+        "minimum": 0,
+        "maximum": 64
+      },
+      "handlesAlwaysVisible": {
+        "title": "Handles always visible",
+        "type": "boolean",
+        "description": "If true, resize and drag handles are always shown on panel hover. If false, the handles are displayede only when the edit mode is active",
+        "default": true
+      }
+    }
+  }
+}

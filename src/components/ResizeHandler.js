@@ -2,9 +2,9 @@
 // @flow
 // @jsx etch.dom
 
-import { CompositeDisposable, Disposable, Emitter } from 'atom'
 import etch from 'etch'
-import MutationInterface from './MutationInterface'
+import { CompositeDisposable, Disposable, Emitter } from 'atom'
+import MutationInterface, { INTERACT } from './MutationInterface'
 
 export default class ResizeHandler extends MutationInterface {
 
@@ -20,10 +20,34 @@ export default class ResizeHandler extends MutationInterface {
     super()
     etch.initialize(this)
 
-    this.onStart = () => this.saveInitialDimensions()
-    this.onEnd = () => this.view.style.setProperty(...(this.horizontal ?
-      ['width', this.width + 'px'] :
-      ['height', this.height + 'px']))
+    this.onStart = () => {
+      let { view, panel }   = this
+      let initialDimensions = this.saveInitialDimensions()
+
+      this.send(
+        INTERACT.RESIZESTART,
+        { handler: this, view, panel, initialDimensions })
+
+    }
+
+    this.onUpdate = () => {
+      let { view, panel }   = this
+      this.send(
+        INTERACT.SIZE,
+        { handler: this, view, panel })
+    }
+
+    this.onEnd = () => {
+
+      let { view, panel }   = this
+      this.send(
+        INTERACT.RESIZE,
+        { handler: this, view, panel })
+
+      this.view.style.setProperty(...(this.horizontal ?
+        ['width', this.width + 'px'] :
+        ['height', this.height + 'px']))
+    }
   }
 
   saveInitialDimensions () {
@@ -35,6 +59,7 @@ export default class ResizeHandler extends MutationInterface {
       this.view.setAttribute('data-original-width', width.toString())
     if(!this.view.getAttribute('data-original-height'))
       this.view.setAttribute('data-original-height', height.toString())
+    return { width, height, axis }
   }
 
   render () {
