@@ -118,13 +118,11 @@ export default class MutationInterface {
     this.position = null
     this._panel   = panel
     this._root    = root ? root.element || root : null
-    console.log(this.panel, panel)
     ancestor(this._root).appendChild(this.element)
   }
 
   constructor () {
     this.format()
-    console.log(this)
     this.onMutationBegin = this.onMutationBegin.bind(this)
     this.onMutationFinish = this.onMutationFinish.bind(this)
     this.onMutate = this.onMutate.bind(this)
@@ -177,8 +175,7 @@ export default class MutationInterface {
     let diff = [ xc - x, yc - y ]
     this.updateState({ co_end, diff })
     this.drawPreview()
-    if (this.quarter)
-      console.log("drag", this.quarter)
+
   }
 
   onMutationBegin (event: MouseEvent) {
