@@ -6,18 +6,31 @@
 // @resize-color: #fe1a5e;
 @resize-color: @background-color-info;
 @drag-color: @background-color-info;
+@panel-min-size: 4em;
 
-atom-panel.top {
-  min-height: 5vh }
-atom-panel.bottom {
-  min-height: 5vh }
+atom-panel.left:not(:empty),
+atom-panel.right:not(:empty),
+atom-panel.mutation-preview {
+  min-width: @panel-min-size }
+
+atom-panel.top:not(:empty),
+atom-panel.bottom:not(:empty),
+atom-panel.mutation-preview {
+  min-height: @panel-min-size }
+
+atom-panel.mutating {
+  display: none }
+
 atom-panel > * {
   transition-property: width, height;
   transition-duration: @resize-duration }
 
-atom-panel-container > atom-panel.mutation-preview {
-  position: fixed !important;
+atom-panel-container atom-panel.mutation-preview {
   z-index: 1000 !important;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: @panel-min-size;
+  min-height: @panel-min-size;
   background: fade(@resize-color, 15%) !important }
 
 .panel-boss-active {
