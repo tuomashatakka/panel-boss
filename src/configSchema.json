@@ -16,6 +16,14 @@
         "type": "boolean",
         "description": "If true, resize and drag handles are always shown on panel hover. If false, the handles are displayede only when the edit mode is active",
         "default": true
+      },
+      "panelDefaultSize": {
+        "title": "Panel default size",
+        "type": "number",
+        "description": "The width/height for panels to adopt when dropped if they have not been dragged.",
+        "default": 0,
+        "minimum": 80,
+        "maximum": 480
       }
     }
   }

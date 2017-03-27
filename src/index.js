@@ -4,10 +4,12 @@ import Draggable from './Draggable.jsx'
 import vDOM from './VirtualDOM'
 // import consule from './dev'
 import { CompositeDisposable } from 'atom'
+import applyEZ from '../ezDOM/src'
 
 export default {
 
   activate(state) {
+    applyEZ()
     atom.notifications.addInfo('PanelBOSS>init')
     this.createVDOM()
   },

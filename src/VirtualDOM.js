@@ -3,16 +3,20 @@
 /** @jsx etch.dom */
 
 import { CompositeDisposable, Disposable, Emitter } from 'atom'
+import { bindDisposableEvent, getView } from './utils'
 import etch from 'etch'
 import ResizeHandler from './components/ResizeHandler'
 import DragHandler from './components/DragHandler'
 import PanelManager from './PanelManager'
 
+const broadcastTransmission: Event = (data) => {
+  let evt = new Event('panelBOSS')
+  evt.data = data
+  return evt }
 let _containers
 
 export default class VirtualDOM extends Emitter {
 
-  broadcastTransmission: Event = new Event('panelBOSS')
 
   constructor () {
 
@@ -109,11 +113,12 @@ export default class VirtualDOM extends Emitter {
 
 
   broadcast (eventName, data={}, view=document) {
-    view.dispatchEvent(broadcastTransmission, { eventName, data })
+    let event = broadcastTransmission({ eventName, ...data })
+    view.dispatchEvent(event)
   }
 
   listen (eventName, callback, view=document) {
-    let sub = bindDisposableEvent('mouseenter', view, callback)
+    let sub = bindDisposableEvent(eventName, view, callback)
     this.subscriptions.add(sub)
     return sub
   }
@@ -121,20 +126,5 @@ export default class VirtualDOM extends Emitter {
   destroy () {
     this.subscriptions.dispose()
   }
-
-}
-
-function getView (panel) {
-     let view  = atom.views.getView(panel)
-  return view && view.element ? view.element : view
-}
-
-
-function bindDisposableEvent (e, el, callback) {
-
-  let attach = () => el.addEventListener(e, callback)
-  let remove = () => el.removeEventListener(e, callback)
-  attach()
-  return new Disposable(() => remove())
 
 }
