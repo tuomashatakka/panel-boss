@@ -8,7 +8,13 @@ type AtomPanelType = {
 type CoordType = [ number, number ];
 
 type DimensionsType = {
-  width: number,
+  width:  number,
   height: number,
-  delta: CoordType
+  delta:  CoordType
+};
+
+type StateType = {
+  co:   CoordType | void,
+  diff: CoordType | void,
+  mutating: boolean | void
 };
