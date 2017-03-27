@@ -1,0 +1,3 @@
+[submodule "ezDOM"]
+	path = ezDOM
+	url = git@github.com:tuomashatakka/ezDOM.git
