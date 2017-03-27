@@ -24,7 +24,7 @@ export default class ResizeHandler extends MutationInterface {
       let { view, panel }   = this
       let initialDimensions = this.saveInitialDimensions()
 
-      this.toggleTargetPanel('opaque')
+      this.toggleTargetPanel('hide')
       this.send(
         INTERACT.RESIZESTART,
         { handler: this, view, panel, initialDimensions })
@@ -40,6 +40,7 @@ export default class ResizeHandler extends MutationInterface {
 
     this.onEnd = () => {
       let { view, panel } = this
+      this._originalDimensions = {}
       this.toggleTargetPanel()
       this.send(
         INTERACT.SIZE,
@@ -51,16 +52,19 @@ export default class ResizeHandler extends MutationInterface {
   }
 
   drawPreview () {
-    let { width, height } = this
+    let { width: dx, height: dy } = this
+    let { width, height } = this._originalDimensions
     this.preview.setAttribute('style', `
-      width: ${width}px;
-      height: ${height}px `)
+      width: ${width + dx}px;
+      height: ${height + dy}px `)
   }
 
   saveInitialDimensions () {
 
     let { width, height } = this.view.getBoundingClientRect()
     let axis = this.location
+
+    this._originalDimensions = { width, height }
 
     this.view.setAttribute('data-original-width', width.toString())
     this.view.setAttribute('data-original-height', height.toString())

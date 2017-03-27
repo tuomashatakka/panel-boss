@@ -4,8 +4,8 @@
 
 import etch from 'etch'
 import { CompositeDisposable, Disposable, Emitter } from 'atom'
-import { INTERACT } from './components/MutationInterface'
-import { PACKAGE_NAME, DEFAULT_SIZE, SCHEMA } from './constants'
+import { INTERACT, PACKAGE_NAME, DEFAULT_SIZE, SCHEMA } from './constants'
+import { getPanelDefaultSize } from './utils'
 
 let _panel
 
@@ -18,36 +18,32 @@ export default class PanelManager {
   constructor () {
     this.subscriptions = new CompositeDisposable()
 
-    new Promise((resolve) => {
-      (function check () {
-        if(window.vDOM) resolve()
-        setTimeout(() => check(), 300)
-      })()
-    })
-    .then(() => {
+    new Promise((resolve) => (function check () {
 
-      console.log({vDOM})
+      if(window.vDOM)
+        resolve()
+      setTimeout(() => check(), 300)
+
+    })())
+    .then(() =>
+
       vDOM.listen('panelBOSS', ({ data }) =>
-        this.handleAction(data.eventName, data))
+        this.handleAction(data.eventName, data)))
 
-    })
     etch.initialize(this)
   }
 
-  get defaultSize () {
-    return atom.config.get(`${PACKAGE_NAME}.${SCHEMA.DEFAULT_SIZE}`)
-  }
-
   handleAction (action, data) {
+
     let mgr = this
     if (action === 'panelDrop') {
-      let { defaultSize } = this
+
       let { handler } = data
       let { horizontal, view } = handler
       let { width, height } = view.getBoundingClientRect()
       let prop  = horizontal ? 'width' : 'height'
       let val   = (Math.min(width, height))
-      val = (val === 0 ? defaultSize : val).toString() + 'px'
+      val = (val === 0 ? getPanelDefaultSize() : val).toString() + 'px'
 
       view.style.setProperty('width',  null)
       view.style.setProperty('height', null)

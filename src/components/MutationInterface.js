@@ -23,6 +23,9 @@ export const INTERACT = {
 }
 
 
+let _panelContent
+
+
 export default class MutationInterface extends Emitter {
 
   _root: any
@@ -144,13 +147,12 @@ export default class MutationInterface extends Emitter {
     if (!this.previewElement) {
       this.previewElement = document.createElement('atom-panel')
       this.previewElement.classList.add('mutation-preview', this.previewClassName)
+      this.previewElement.appendChild(this.getPanelContent())
     }
     else
       this.previewElement.classList.remove('left', 'right', 'top', 'bottom')
 
     if (this.panel && !this.previewElement.parentElement) {
-      console.warn('this.location', this.location)
-      console.warn(getContainer(this.location))
       getContainer(this.location)
         .appendChild(this.previewElement)
     }
@@ -170,10 +172,22 @@ export default class MutationInterface extends Emitter {
     return CONTAINERS.find(container => cls.contains(container)) || null
   }
 
+  getPanelContent (): HTMLElement {
+    if (!_panelContent) {
+      let el = document.createElement('div')
+      el.innerHTML = this.view.innerHTML || ''
+      el.setAttribute('style', 'width: 100%; height: 100%; overflow: hidden;')
+      _panelContent = el
+    }
+    return _panelContent
+  }
+
   getPreviewSize () {
     let minSize = 200
     let { width, height } = this.getPanelDimensions()
     let size  = this.horizontal ? parseInt(width) : parseInt(height)
+    if (isNaN(size))
+      size = minSize
     return size < minSize ? minSize : size
   }
 
@@ -241,6 +255,8 @@ export default class MutationInterface extends Emitter {
   onMutationFinish (event: MouseEvent) {
     this.preview.remove()
     this.updateState({ mutating: false })
+    _panelContent = null
+
     document.removeEventListener('mousemove', this.onMutate)
     document.removeEventListener('mouseup', this.onMutationFinish)
     document.documentElement.classList.remove('panel-boss-active')

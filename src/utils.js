@@ -32,11 +32,25 @@ export function getView (panel: AtomPanelType): HTMLElement {
 }
 
 
+/**
+ * Get config setting for panel default size
+ *
+ * @method getPanelDefaultSize
+ * @return {number}  defaultSize config value
+ */
+
 export function getPanelDefaultSize () {
   return atom.config.get(`${PACKAGE_NAME}.${SCHEMA.DEFAULT_SIZE}`)
 }
 
 
+/**
+ * Get the atom-panel-container element for the given position
+ *
+ * @method getContainer
+ * @param  {PositionType}     position Position of which container should be returned
+ * @return {HTMLElement}               atom-panel-container.<position>
+ */
 
 export function getContainer (position: PositionType | null): HTMLElement | null {
   if (!position)
@@ -76,9 +90,8 @@ export function bindDisposableEvent (e, el, callback) {
  * @return {Array}   2-dimensional coordinates as an array
  */
 
-export function positionFromEvent ({ clientX: x=0, clientY: y=0 }): Array<number> {
-  return [ x, y ]
-}
+export const positionFromEvent = ({ clientX: x=0, clientY: y=0 }): Array<number> =>
+  [ x, y ]
 
 
 /**
