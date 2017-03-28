@@ -153,8 +153,8 @@ export default class MutationInterface extends Emitter {
       this.previewElement.classList.remove('left', 'right', 'top', 'bottom')
 
     if (this.panel && !this.previewElement.parentElement) {
-      getContainer(this.location)
-        .appendChild(this.previewElement)
+      let cont = getContainer(this.location)
+      cont.insert(this.previewElement, getView(this.panel))
     }
 
     this.previewElement.addClass(this.position)
@@ -254,8 +254,9 @@ export default class MutationInterface extends Emitter {
 
   onMutationFinish (event: MouseEvent) {
     this.preview.remove()
-    this.updateState({ mutating: false })
     _panelContent = null
+    this.previewElement = null
+    this.updateState({ mutating: false })
 
     document.removeEventListener('mousemove', this.onMutate)
     document.removeEventListener('mouseup', this.onMutationFinish)

@@ -1,12 +1,13 @@
 @import "ui-variables";
 @import "syntax-variables";
 
-@handle-size: 1.33em;
-@resize-duration: 300ms;
 // @resize-color: #fe1a5e;
+@resize-duration: 300ms;
 @resize-color: @background-color-info;
 @drag-color: @background-color-info;
-@panel-min-size: 4em;
+@panel-min-size: 6em;
+@handle-size: 1.33em;
+
 
 atom-panel.left:not(:empty),
 atom-panel.right:not(:empty),
@@ -20,6 +21,7 @@ atom-panel.mutation-preview {
 
 atom-panel.mutating {
   display: none }
+
 
 atom-panel > * {
   transition-property: width, height;
@@ -47,25 +49,6 @@ atom-panel-container atom-panel.mutation-preview {
   background: fade(@drag-color, 10%) !important;
   height: @handle-size !important }
 
-.drag-preview.right,
-.drag-preview.left {
-  top: 0 !important;
-  bottom: 0 !important;
-  max-width: 25vh }
-.drag-preview.bottom,
-.drag-preview.top {
-  left: 0 !important;
-  right: 0 !important;
-  max-height: 25vh }
-.drag-preview.left {
-  left: 0 }
-.drag-preview.right {
-  right: 0 }
-.drag-preview.top {
-  top: 0 }
-.drag-preview.bottom {
-  bottom: 0 }
-
 atom-panel-container:hover atom-panel .drag-handle,
 atom-panel-container:hover atom-panel .resize-handle {
   opacity: 1;
@@ -75,6 +58,7 @@ atom-panel-container:hover atom-panel .resize-handle {
 atom-panel .drag-handle {
   opacity: 0;
   transition: opacity @resize-duration 1s }
+
 atom-panel .resize-handle {
   position: absolute;
   background: transparent;
@@ -88,101 +72,36 @@ atom-panel .resize-handle {
     background: fade(@resize-color, 50%);
     width: auto;
     height: 100%;
-    margin: 0 @handle-size / 2.1;
-  }
+    margin: 0 @handle-size / 2.1 }
+
+  atom-panel-container & { }
 
   atom-panel-container.left &,
   atom-panel-container.right & {
+    width: @handle-size !important;
+    height: 100% !important;
+    cursor: col-resize;
 
     &::before {
       width: 1px }
 
     atom-panel > * {
-      height: 100% }
-
-    cursor: col-resize;
-    width: @handle-size !important;
-    height: 100% !important }
+      height: 100% }}
 
   atom-panel-container.top &,
   atom-panel-container.bottom & {
+    height: @handle-size !important;
+    width: 100% !important;
+    cursor: row-resize;
 
     &::before {
       margin: @handle-size / 2.1 0;
       height: 1px }
 
     atom-panel > * {
-      width: 100% }
+      width: 100% } }}
 
-    cursor: row-resize;
-    height: @handle-size !important;
-    width: 100% !important }}
-
-atom-panel.right .resize-handle,
-atom-panel.left .resize-handle {
-  top: 0 !important;
-  bottom: 0 !important }
-atom-panel.top .resize-handle,
-atom-panel.bottom .resize-handle {
-  left: 0 !important;
-  right: 0 !important }
 atom-panel.left .resize-handle {  right: -@handle-size / 2 !important }
 atom-panel.right .resize-handle { left: -@handle-size / 2 !important }
 atom-panel.top .resize-handle { bottom: -@handle-size / 2 !important }
 atom-panel.bottom .resize-handle { top: -@handle-size / 2 !important }
-
-dev-console {
-  @line-height: 1.75em;
-  overflow-y: auto;
-
-  code {
-    font-size: 10px;
-    font-family: Source Code Pro;
-    font-weight: 300;
-    line-height: @line-height;
-    flex-direction: column-reverse;
-    display: flex }
-
-  article {
-    display: block;
-    padding: 0 0 @component-padding }
-
-  &::-webkit-scrollbar {
-    background: transparent;
-    width: 6px !important }
-
-  &::-webkit-scrollbar-thumb {
-    background: #f33e3e !important }
-
-  &::-webkit-scrollbar-track {
-    background: rgba(232, 80, 189, 0.02) !important }
-
-  .key:hover {
-    background: red }
-  @key: #f0425c;
-  .sep {
-    opacity: 0.5 }
-  .key {
-    font-weight: 500;
-    line-height: @line-height;
-    vertical-align: middle;
-    color: @key }
-  .key .sep {
-    color: @key }
-  .value {
-    line-height: @line-height;
-    vertical-align: middle;
-    overflow: hidden }
-  .key.number {
-    color: mix(#66fd97, @key) }
-  .value.number {
-    color: #66fd97 }
-  .array {
-    color: #94def3 }
-  .indent {
-    padding-left: 0 }
-  .indent .indent {
-    padding-left: 1em }
-  .indent.open {
-    > .value {
-      max-height: none }}}
