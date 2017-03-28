@@ -22,6 +22,22 @@ export default class VirtualDOM extends Emitter {
 
     super()
     this.bindMouseEnter = this.bindMouseEnter.bind(this)
+    this.panels.forEach(o => {
+      let close = document.createElement('div')
+      close.addClass('boss', 'btn', 'close-panel')
+      let exists = false
+      let view = getView(o)
+      let items = view.children
+      if (items && items.forEach)
+        o.forEach(child => {
+        if (child.classList.has('boss'))
+          exists = true
+      })
+
+      if (!exists && view.appendChild)
+        view.appendChild(close)
+
+    })
 
     this.subscriptions = new CompositeDisposable()
     this.subscriptions.add(this.createHandlerInstances())
