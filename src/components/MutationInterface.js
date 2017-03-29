@@ -1,5 +1,6 @@
 'use babel'
 // @flow
+
 import { Emitter } from 'atom'
 import { positionFromEvent, ancestorByTagName, getContainer, getView } from '../utils'
 import { CONTAINERS } from '../constants'

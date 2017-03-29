@@ -1,36 +1,7 @@
 @import "ui-variables";
 @import "syntax-variables";
-@import "octicon-mixins";
+@import "mixins";
 
-.ico(@icon, @size: 1) {
-  .octicon(@icon);
-  &::before {
-    display: inline-block;
-    vertical-align: middle;
-    font-size: 16px * @size;
-    line-height: inherit;
-    width: auto;
-    height: auto;
-  }
-}
-
-
-.horizontal(@size, @pos) {
-  width: @size !important;
-  height: 100% !important;
-  cursor: col-resize;
-  &::before {
-    @{pos}: 0;
-    width: 1px }
-}
-.vertical(@size, @pos) {
-  height: @size !important;
-  width: 100% !important;
-  cursor: row-resize;
-  &::before {
-    @{pos}: 0;
-    width: 1px }
-}
 // @resize-color: #fe1a5e;
 @resize-duration: 300ms;
 @resize-color: @background-color-info;
@@ -44,20 +15,29 @@
 atom-panel.left:not(:empty),
 atom-panel.right:not(:empty),
 atom-panel.mutation-preview {
+  max-width: 40vw;
   min-width: @panel-min-size }
 
 atom-panel.top:not(:empty),
 atom-panel.bottom:not(:empty),
 atom-panel.mutation-preview {
+  max-height: 40vh;
   min-height: @panel-min-size }
 
 atom-panel.mutating {
+  display: none }
+
+.boss.btn ~ .boss.btn {
   display: none }
 
 
 atom-panel > * {
   transition-property: width, height;
   transition-duration: 0s }
+
+atom-panel {
+  transition-property: width, height, max-width, max-height;
+  transition-duration: @resize-duration }
 
 atom-panel-container atom-panel.mutation-preview {
   z-index: 1000 !important;
@@ -68,6 +48,45 @@ atom-panel-container atom-panel.mutation-preview {
   transition-property: width, height;
   transition-duration: @resize-duration;
   background: fade(@resize-color, 15%) !important }
+
+.h(@c, @s, @r) {
+  @d: ~".@{c} > atom-panel-container > atom-panel.@{s}";
+  @{d} { @r(); }
+}
+
+.h(horizontal, collapse, {
+  max-width: 6em;
+  overflow: hidden });
+
+.h(vertical, collapse, {
+  max-height: 6em;
+  overflow: hidden });
+
+atom-panel .btn.boss {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 600;
+  .ico(x, 2);
+  .boss-menu.btn;
+}
+
+.boss-menu.btn {
+  @size: 4rem;
+  @fontsize: 1.5rem;
+
+  border-radius: 0 !important;
+  background: black !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center;
+  vertical-align: middle;
+
+  width: @size !important;
+  height: @size !important;
+  font-size: @fontsize !important;
+  line-height: @size !important;
+}
 
 .panel-boss-active {
   cursor: -webkit-grabbing !important;

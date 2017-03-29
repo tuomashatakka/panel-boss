@@ -1,8 +1,9 @@
 'use babel'
-// @flow
-// @jsx etch.dom
+/** @jsx etch.dom */
+/** @flow */
 
 import etch from 'etch'
+
 import { CompositeDisposable, Disposable, Emitter } from 'atom'
 import { INTERACT, PACKAGE_NAME, DEFAULT_SIZE, SCHEMA } from './constants'
 import { getPanelDefaultSize } from './utils'
@@ -81,7 +82,7 @@ export default class PanelManager {
   update () {}
 
   render () {
-    return <div>Panel manager.....</div>
+    return (<div>Panel manager</div>)
   }
 
   destroy () {

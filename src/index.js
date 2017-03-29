@@ -1,10 +1,11 @@
 'use babel'
+// @flow
+// @jsx etch.dom
 
-import Draggable from './Draggable.jsx'
 import vDOM from './VirtualDOM'
 // import consule from './dev'
 import { CompositeDisposable } from 'atom'
-import applyEZ from '../ezDOM/src'
+import applyEZ from '../node_modules/ez-dom/src'
 
 export default {
 

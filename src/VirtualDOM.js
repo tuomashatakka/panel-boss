@@ -1,19 +1,80 @@
 'use babel'
-/** @flow */
-/** @jsx etch.dom */
+// @flow
+// @jsx etch.dom
 
-import { CompositeDisposable, Disposable, Emitter } from 'atom'
+import { CompositeDisposable, Disposable, Emitter } from 'atom';
 import { bindDisposableEvent, getView } from './utils'
 import etch from 'etch'
 import ResizeHandler from './components/ResizeHandler'
 import DragHandler from './components/DragHandler'
 import PanelManager from './PanelManager'
 
+import { isArray, assertElement } from '../node_modules/ez-dom/src/assert'
+
 const broadcastTransmission: Event = (data) => {
   let evt = new Event('panelBOSS')
   evt.data = data
   return evt }
+
 let _containers
+
+const ATTRS_MAP = {
+  className: function (cls) {
+    if (cls.constructor.name)
+      return this.addClass(...cls)
+    return this.addClass(...(cls.split(/(s+)/)))
+  }
+}
+
+function setProps (attrs={}) {
+  for (let attr in attrs) {
+    if (ATTRS_MAP[attr])
+      ATTRS_MAP[attr].call(this, attrs[attr])
+    else
+      this.setAttribute(attr, attrs[attr])
+  }
+  return this
+}
+
+let elem = (type, attr, ...children) => {
+
+  let el = document.createElement(type)
+  if (attr && attr.constructor.name === 'Object')
+    return setProps.call(el, attr)
+
+  children.unshift(attr)
+  el.append(...children.map(c => assertElement(c)))
+  return el
+}
+
+// Events
+class EventInterface extends Emitter {
+  listen (event, dispatch) {
+    this.on(event, )
+  }
+}
+
+
+function listen (el, eventName, callback) {
+
+  let remove = () => el.removeEventListener(eventName, fnc)
+  let add    = () => el.addEventListener(eventName, fnc)
+  let fnc    = (e) => {
+    var result = callback.call(el, e, remove)
+    // remove()
+    return result
+  }
+  add()
+  return remove
+
+}
+
+
+HTMLElement.prototype.listen = function (name, c) {
+  return listen(this, name, c)
+}
+
+
 
 export default class VirtualDOM extends Emitter {
 
@@ -22,26 +83,12 @@ export default class VirtualDOM extends Emitter {
 
     super()
     this.bindMouseEnter = this.bindMouseEnter.bind(this)
-    this.panels.forEach(o => {
-      let close = document.createElement('div')
-      close.addClass('boss', 'btn', 'close-panel')
-      let exists = false
-      let view = getView(o)
-      let items = view.children
-      if (items && items.forEach)
-        o.forEach(child => {
-        if (child.classList.has('boss'))
-          exists = true
-      })
-
-      if (!exists && view.appendChild)
-        view.appendChild(close)
-
-    })
+    this.panels.forEach(o => this.createToggle(o))
 
     this.subscriptions = new CompositeDisposable()
     this.subscriptions.add(this.createHandlerInstances())
     this.subscriptions.add(this.registerPanelChangeObservers())
+
   }
 
   createHandlerInstances () {
@@ -55,6 +102,29 @@ export default class VirtualDOM extends Emitter {
         this.refs[ref].destroy()
       }
     })
+  }
+
+  createToggle (o) {
+
+    let close = elem('div', {
+      className: ['boss', 'btn', 'close-panel']
+    })
+
+    console.log(pr)
+
+    let view = getView(o)
+    let pr = close.listen('click', () => view.classList.toggle('collapse'))
+    let items = view.childNodes || []
+    let exists = items && [...items].reduce((t, c) => t || c.classList.contains('boss'), false)
+    if (exists) items.forEach(c => {
+      console.warn(c)
+      if (c.classList.contains('boss'))
+        c.remove()
+    })
+    // if (!exists && view.append)
+    //   view.append(close)
+    view.append(close)
+
   }
 
   bindMouseEnter (panel: AtomPanelType) {
