@@ -3,6 +3,7 @@
 // @jsx etch.dom
 
 import etch from 'etch'
+
 import { CompositeDisposable, Disposable, Emitter } from 'atom'
 import MutationInterface, { INTERACT } from './MutationInterface'
 

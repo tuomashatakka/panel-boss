@@ -3,6 +3,7 @@
 // @jsx etch.dom
 
 import { CompositeDisposable, Disposable, Emitter } from 'atom'
+
 import etch from 'etch'
 import MutationInterface, { INTERACT } from './MutationInterface'
 import { isContainer, ancestorByTagName } from '../utils'
@@ -67,23 +68,24 @@ export default class DragHandler extends MutationInterface {
 
       // Add the panel as a new panel to correctly bind
       // atom's inner panel action event handlers
+
       atom.workspace.addPanel(targetArea, panel)
       this.send(INTERACT.DROP, { panel, view, handler: this, targetArea })
 
       // Remove the container after its contents
       // have been appended to a new host
-      formerPanelElement.remove()
+      // formerPanelElement.remove()
     }
 
     // Finally, remove the preview element
     // from the DOM
-    this.previewElement.remove()
+    if (this.previewElement)
+      this.previewElement.destroy()
   }
 
   drawPreview () {
     let position = this.location
     let size = this.getPreviewSize()
-    console.log("location:", position, "size:", size)
     if (position)
       this.setPreviewPosition(position)
     this.setPreviewSize(size)

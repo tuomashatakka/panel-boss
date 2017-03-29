@@ -101,5 +101,15 @@ export const positionFromEvent = ({ clientX: x=0, clientY: y=0 }): Array<number>
  * @return {HTMLElement}
  */
 
-export const ancestorByTagName = (el: HTMLElement, tagName: string = 'ATOM-PANEL'): HTMLElement | null =>
-  !el ? null : el.tagName !== tagName ? ancestorByTagName(el.parentElement, tagName) : el
+export const ancestorByTagName = (el, tagName) => {
+
+  if (!tagName)
+    tagName = 'ATOM-PANEL'
+  if(!el)
+    return null
+
+    if (el.tagName !== tagName)
+      return ancestorByTagName(el.parentElement, tagName)
+
+    return el
+}

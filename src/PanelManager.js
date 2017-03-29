@@ -1,8 +1,9 @@
 'use babel'
-// @flow
-// @jsx etch.dom
+/** @jsx etch.dom */
+/** @flow */
 
 import etch from 'etch'
+
 import { CompositeDisposable, Disposable, Emitter } from 'atom'
 import { INTERACT, PACKAGE_NAME, DEFAULT_SIZE, SCHEMA } from './constants'
 import { getPanelDefaultSize } from './utils'
@@ -14,8 +15,10 @@ export default class PanelManager {
   elements: Element
   state: StateType = {}
   subscriptions: CompositeDisposable
+  panelRegistry: Array<Panel>
 
   constructor () {
+
     this.subscriptions = new CompositeDisposable()
 
     new Promise((resolve) => (function check () {
@@ -42,17 +45,19 @@ export default class PanelManager {
       let { horizontal, view } = handler
       let { width, height } = view.getBoundingClientRect()
       let prop  = horizontal ? 'width' : 'height'
+      let proc  = horizontal ? 'height' : 'width'
       let val   = (Math.min(width, height))
-      val = (val === 0 ? getPanelDefaultSize() : val).toString() + 'px'
+      val = ((val === 0 ? getPanelDefaultSize() : val) || '').toString() + 'px'
 
-      view.style.setProperty('width',  null)
-      view.style.setProperty('height', null)
+      view.style.setProperty(proc, null)
       view.style.setProperty(prop, val)
       atom.notifications.addInfo([
         "width, height: ", width, height,
         "setting", prop, "to", val].join(' '))
     }
   }
+
+
 
   get panel () {
 
@@ -77,7 +82,7 @@ export default class PanelManager {
   update () {}
 
   render () {
-    return <div>Panel manager.....</div>
+    return (<div>Panel manager</div>)
   }
 
   destroy () {

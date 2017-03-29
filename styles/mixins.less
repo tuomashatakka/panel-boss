@@ -1,0 +1,23 @@
+@import "octicon-mixins";
+
+.ico(@icon, @size: 1) {
+
+  .octicon(@icon);
+  &::before {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 16px * @size;
+    line-height: inherit;
+    width: auto;
+    height: auto }}
+
+.handle(@w, @h, @p, @a, @c) {
+  height: @h !important;
+  width:  @w !important;
+  cursor: @c;
+  &::before {
+    @{p}: 0px;
+    @{a}: 1px }}
+
+.horizontal(@size, @pos) { .handle(@size, 100%, @pos, width, col-resize) }
+.vertical(@size, @pos) {   .handle(100%, @size, @pos, height, row-resize) }

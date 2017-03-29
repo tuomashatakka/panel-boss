@@ -1,5 +1,6 @@
 'use babel'
 // @flow
+
 import { Emitter } from 'atom'
 import { positionFromEvent, ancestorByTagName, getContainer, getView } from '../utils'
 import { CONTAINERS } from '../constants'
@@ -28,23 +29,22 @@ let _panelContent
 
 export default class MutationInterface extends Emitter {
 
-  _root: any
-  _panel: AtomPanelType
-
-  handleClassName: string
+  _root:            any
+  _panel:           AtomPanelType
+  handleClassName:  string
   previewClassName: string
-  position: PositionType | null
-  previewElement: HTMLElement
-  element: HTMLElement
-  state: {
-    co: CoordType | void,
-    co_end: CoordType,
-    diff?: Array<number>,
-  }
-  onMutationBegin: Function
+  previewElement:   HTMLElement
+  element:          HTMLElement
+  onStart:          Function | void
+  onEnd:            Function | void
+  onMutate:         Function
+  updateState:      Function
+  onMutationBegin:  Function
   onMutationFinish: Function
-  onMutate: Function
-  updateState: Function
+  position:         PositionType | null
+  state: { co:      CoordType | void,
+           co_end:  CoordType,
+           diff?:   Array<number> }
 
   constructor () {
     super()
@@ -57,6 +57,15 @@ export default class MutationInterface extends Emitter {
       co:     [ 0, 0 ],
       co_end: [ 0, 0 ],
       diff:   [ 0, 0 ] }
+  }
+
+  show () {
+    this.view.addClass('open')
+    this.view.removeClass('collapsed')
+  }
+  hide () {
+    this.view.addClass('collapsed')
+    this.view.removeClass('open')
   }
 
   send (message: string, data: {} = {}, ...flags: Array<string>) {
@@ -117,6 +126,8 @@ export default class MutationInterface extends Emitter {
   }
 
   get view (): HTMLElement {
+    if (this._panel._item)
+      return this._panel._item
     return this._root || atom.views.getView(this._root)
   }
 
@@ -154,7 +165,10 @@ export default class MutationInterface extends Emitter {
 
     if (this.panel && !this.previewElement.parentElement) {
       let cont = getContainer(this.location)
-      cont.insert(this.previewElement, getView(this.panel))
+      let index = getView(this.panel)
+      if (index.parentElement !== this.previewElement.parentElement)
+        index = null
+      cont.insert(this.previewElement, index)
     }
 
     this.previewElement.addClass(this.position)
