@@ -12,12 +12,27 @@
   border-radius:  0;
   margin:         0;
   padding:        0;
+  border:         none;
   top:            auto;
   width:          @size;
   height:         @size;
   line-height:    @size;
-  cursor:         -webkit-grab !important;
   font-size:      0.8em }
+
+atom-panel.collapse  {
+  > *:not(.boss) {
+    display: none !important }
+  .boss.close-panel {
+    right:  0 !important;
+    bottom: 0 !important;
+    z-index: 10000;
+
+    &::before {
+      transition: 0.2s all;
+      transform: rotate(45deg) }}
+
+  .boss.drag-handle {
+    display: none }}
 
 atom-panel .boss {
   .boss-control;
@@ -27,16 +42,19 @@ atom-panel .boss {
   opacity:    0;
 
   &.close-panel {
-    .ico(plus, 1.2);
-    right:     @size;
+    .ico(x, 1);
     background: fade(@drag-color, 10%) !important;
-    bottom:      0 }
+    border-style: none !important;
+    cursor:    pointer !important;
+    right:     @size;
+    bottom:    0 }
 
   &.drag-handle {
     .ico(grabber, 1.2);
     background: fade(@drag-color, 10%) !important;
-    right:          0;
-    bottom:        0 }
+    cursor: -webkit-grab !important;
+    right:  0;
+    bottom: 0 }
 
   &.resize-handle {
     .ico(ellipsis);
