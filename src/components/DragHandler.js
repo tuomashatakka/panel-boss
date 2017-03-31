@@ -3,17 +3,16 @@
 // @jsx etch.dom
 
 import { CompositeDisposable, Disposable, Emitter } from 'atom'
-
 import etch from 'etch'
 import MutationInterface, { INTERACT } from './MutationInterface'
 import { isContainer, ancestorByTagName } from '../utils'
 
 export default class DragHandler extends MutationInterface {
 
-  element: Element
+  element: HTMLElement
   root: Element
-  previewClassName = 'drag-preview'
-  handleClassName = 'drag-handle'
+  previewClassName = 'boss boss-prop drag-preview'
+  handleClassName = 'boss boss-handle drag-handle'
 
   constructor () {
 
@@ -54,7 +53,7 @@ export default class DragHandler extends MutationInterface {
     return this.quarter[1]
   }
 
-  set location (targetArea: string) {
+  set location (targetArea: string | null) {
 
     let { panel, view } = this
 
@@ -79,8 +78,8 @@ export default class DragHandler extends MutationInterface {
 
     // Finally, remove the preview element
     // from the DOM
-    if (this.previewElement)
-      this.previewElement.destroy()
+    if (this.previewElement && this.previewElement.remove)
+        this.previewElement.remove()
   }
 
   drawPreview () {

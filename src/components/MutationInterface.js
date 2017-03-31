@@ -64,8 +64,8 @@ export default class MutationInterface extends Emitter {
     this.view.removeClass('collapsed')
   }
   hide () {
-    this.view.addClass('collapsed')
     this.view.removeClass('open')
+    this.view.addClass('collapsed')
   }
 
   send (message: string, data: {} = {}, ...flags: Array<string>) {
@@ -157,7 +157,7 @@ export default class MutationInterface extends Emitter {
 
     if (!this.previewElement) {
       this.previewElement = document.createElement('atom-panel')
-      this.previewElement.classList.add('mutation-preview', this.previewClassName)
+      this.previewElement.classList.add('mutation-preview', ...this.previewClassName.split(/\s+/))
       this.previewElement.appendChild(this.getPanelContent())
     }
     else
@@ -258,7 +258,8 @@ export default class MutationInterface extends Emitter {
     let co = positionFromEvent(event)
     let co_end = [ 0, 0 ]
 
-    this.updateState({ co, co_end, mutating: true })
+    this.updateState({ co, co_end, mutating: true, diff: [0, 0] })
+    this.drawPreview()
     document.addEventListener('mousemove', this.onMutate)
     document.addEventListener('mouseup', this.onMutationFinish)
     document.documentElement.classList.add('panel-boss-active')

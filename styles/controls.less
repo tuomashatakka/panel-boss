@@ -1,0 +1,68 @@
+@import (reference) "boss-variables";
+@import (reference) "mixins";
+
+.panel-boss-active {
+  cursor: -webkit-grab !important;
+  -webkit-user-select: none }
+
+.boss-control() {
+  @size:          2rem;
+  vertical-align: middle;
+  text-align:     center;
+  border-radius:  0;
+  margin:         0;
+  padding:        0;
+  top:            auto;
+  width:          @size;
+  height:         @size;
+  line-height:    @size;
+  cursor:         -webkit-grab !important;
+  font-size:      0.8em }
+
+atom-panel .boss {
+  .boss-control;
+  transition: opacity @resize-duration 1s;
+  position:   absolute;
+  z-index:    600;
+  opacity:    0;
+
+  &.close-panel {
+    .ico(plus, 1.2);
+    right:     @size;
+    background: fade(@drag-color, 10%) !important;
+    bottom:      0 }
+
+  &.drag-handle {
+    .ico(grabber, 1.2);
+    background: fade(@drag-color, 10%) !important;
+    right:          0;
+    bottom:        0 }
+
+  &.resize-handle {
+    .ico(ellipsis);
+    background: fade(@drag-color, 4%) !important;
+    // color: transparent;
+    font-size: 6px;
+    atom-panel-container.left & {
+      .horizontal(@resize-handle-size, right) }
+    atom-panel-container.right & {
+      .horizontal(@resize-handle-size, left) }
+    atom-panel-container.top & {
+      .vertical(@resize-handle-size, bottom) }
+    atom-panel-container.bottom & {
+      .vertical(@resize-handle-size, top) }
+    &::before {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      line-height: 0;
+      width: 100% !important;
+      transform: rotate(90deg);
+      }}
+
+  atom-panel-container:hover & {
+    opacity:              1;
+    transition-delay:     0s;
+    transition-duration:  0.25s }
+}

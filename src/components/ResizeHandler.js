@@ -13,8 +13,8 @@ export default class ResizeHandler extends MutationInterface {
   element: Element
   root: Element
   vDOM: {}
-  previewClassName: string = 'resize-preview'
-  handleClassName: string = 'resize-handle'
+  previewClassName: string = 'boss boss-prop resize-preview'
+  handleClassName: string = 'boss boss-handle resize-handle'
 
   constructor () {
 
@@ -24,7 +24,6 @@ export default class ResizeHandler extends MutationInterface {
     this.onStart = () => {
       let { view, panel }   = this
       let initialDimensions = this.saveInitialDimensions()
-
       this.toggleTargetPanel('hide')
       this.send(
         INTERACT.RESIZESTART,
@@ -42,7 +41,7 @@ export default class ResizeHandler extends MutationInterface {
     this.onEnd = () => {
       let { view, panel } = this
       this._originalDimensions = {}
-      this.toggleTargetPanel()
+      this.toggleTargetPanel('show')
       this.send(
         INTERACT.SIZE,
         { handler: this, view, panel })
@@ -54,7 +53,7 @@ export default class ResizeHandler extends MutationInterface {
 
   drawPreview () {
     let { width: dx, height: dy } = this
-    let { width, height } = this._originalDimensions
+    let { width, height } = this._originalDimensions || {width: dx, height: dy }
     this.preview.setAttribute('style', `
       width: ${width + dx}px;
       height: ${height + dy}px `)
@@ -66,9 +65,6 @@ export default class ResizeHandler extends MutationInterface {
     let axis = this.location
 
     this._originalDimensions = { width, height }
-
-    this.view.setAttribute('data-original-width', width.toString())
-    this.view.setAttribute('data-original-height', height.toString())
     return { width, height, axis }
   }
 
