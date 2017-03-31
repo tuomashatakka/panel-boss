@@ -3,6 +3,7 @@
 .ico(@icon, @size: 1) {
 
   .octicon(@icon);
+
   &::before {
     display: inline-block;
     vertical-align: middle;
@@ -14,10 +15,25 @@
 .handle(@w, @h, @p, @a, @c) {
   height: @h !important;
   width:  @w !important;
-  cursor: @c;
+  cursor: @c !important;
+  @{p}:   0 !important;
   &::before {
-    @{p}: 0px;
+    @{p}: 0 !important;
     @{a}: 1px }}
 
 .horizontal(@size, @pos) { .handle(@size, 100%, @pos, width, col-resize) }
 .vertical(@size, @pos) {   .handle(100%, @size, @pos, height, row-resize) }
+
+.container-axis(@c, @s, @r) {
+  @d: ~".@{c} > atom-panel-container > atom-panel.@{s}";
+  @{d} when (@c = vertical) {
+    max-height: 6em;
+    height: 3em;
+    overflow: hidden
+  }
+  @{d} when (@c = horizontal) {
+    max-width: 6em;
+    width: 3em;
+    overflow: hidden
+  }
+}

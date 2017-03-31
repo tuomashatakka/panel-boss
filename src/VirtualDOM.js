@@ -110,8 +110,6 @@ export default class VirtualDOM extends Emitter {
       className: ['boss', 'btn', 'close-panel']
     })
 
-    console.log(pr)
-
     let view = getView(o)
     let pr = close.listen('click', () => view.classList.toggle('collapse'))
     let items = view.childNodes || []
