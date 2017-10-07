@@ -1,4 +1,5 @@
 'use babel'
+/** @jsx etch.dom */
 // @flow
 
 import { Emitter } from 'atom'

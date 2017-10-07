@@ -1,6 +1,6 @@
 'use babel'
+/** @jsx etch.dom */
 // @flow
-// @jsx etch.dom
 
 import { CompositeDisposable, Disposable, Emitter } from 'atom'
 import etch from 'etch'

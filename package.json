@@ -36,8 +36,7 @@
   },
   "dependencies": {
     "etch": "^0.10.0",
-    "ez-dom": "git://github.com/tuomashatakka/ezDOM.git",
-    "react": "^15.4.2"
+    "ez-dom": "git://github.com/tuomashatakka/ezDOM.git"
   },
   "configSchema": {
     "behavior": {
