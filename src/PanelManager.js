@@ -57,8 +57,6 @@ export default class PanelManager {
     }
   }
 
-
-
   get panel () {
 
     if (_panel)
