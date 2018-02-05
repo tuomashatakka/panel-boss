@@ -205,22 +205,25 @@ export default class MutationInterface extends Emitter {
     return size < minSize ? minSize : size
   }
 
-  setPreviewSize (size: number) {
+  async setPreviewSize (size: number) {
     let { axis } = this
     this.preview.style.setProperty('width', 'auto')
     this.preview.style.setProperty('height', 'auto')
     this.preview.style.setProperty(axis, size.toString() + 'px')
+    let view      = getView(this.panel)
+    let container = getContainer(this.location)
+    let child   = false
+    console.warn(view.parentElement.classList.contains(this.location))
+    if (!view.parentElement.classList.contains(this.location))
+      container.append(this.preview)
   }
 
   setPreviewPosition (position: PositionType | null) {
 
     position = position || this.location
-    let container = getContainer(position)
 
     this.preview.classList.remove('left', 'right', 'top', 'bottom')
     this.preview.classList.add(position)
-    if (container)
-      container.appendChild(this.preview)
   }
 
   drawPreview () {
@@ -255,9 +258,11 @@ export default class MutationInterface extends Emitter {
 
   onMutationBegin (event: MouseEvent) {
 
-    let co = positionFromEvent(event)
-    let co_end = [ 0, 0 ]
+    let co      = positionFromEvent(event)
+    let co_end  = [ 0, 0 ]
+    let view    = getView(this.panel)
 
+    view.parentElement.insert(this.preview, view)
     this.updateState({ co, co_end, mutating: true, diff: [0, 0] })
     this.drawPreview()
     document.addEventListener('mousemove', this.onMutate)
