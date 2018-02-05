@@ -1,6 +1,6 @@
 'use babel'
+/** @jsx etch.dom */
 // @flow
-// @jsx etch.dom
 
 import etch from 'etch'
 

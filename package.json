@@ -1,7 +1,7 @@
 {
   "name": "panel-boss",
   "main": "./src/index",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Be the boss of your (i)DE - resize any panel to any size at any time",
   "author": "Tuomas Hatakka",
   "scripts": {
@@ -36,8 +36,7 @@
   },
   "dependencies": {
     "etch": "^0.10.0",
-    "ez-dom": "git://github.com/tuomashatakka/ezDOM.git",
-    "react": "^15.4.2"
+    "ez-dom": "git://github.com/tuomashatakka/ezDOM.git"
   },
   "configSchema": {
     "behavior": {

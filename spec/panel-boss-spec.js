@@ -1,6 +1,6 @@
 'use babel';
 
-import PanelBoss from '../lib/panel-boss';
+import PanelBoss from '../src';
 
 // Use the command `window:run-package-specs` (cmd-alt-ctrl-p) to run specs.
 //
